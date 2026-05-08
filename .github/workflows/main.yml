@@ -1,10 +1,9 @@
-name: abhinav-singh-portfolio
+name: Deploy Portfolio to AWS S3
 
 on:
   push:
     branches:
       - main
-
 
 jobs:
   deploy:
@@ -12,16 +11,17 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: aws-actions/configure-aws-credentials@v1
-
-    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      - name: Deploy to GitHub Pages
-        run: aws s3 sync . s3://abhinav-singh-portfolio --delete
+      - name: Deploy to S3 Bucket
+        run: |
+          aws s3 sync . s3://abhinav-singh-portfolio --delete \
+          --exclude ".git/*" \
+          --exclude ".github/*"
